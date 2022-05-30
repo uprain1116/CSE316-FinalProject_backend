@@ -30,7 +30,7 @@ var UserSchema = new Schema(
             address:{
                 address1:{
                     type: String,
-                    maxlength: true
+                    maxlength: 100
                 },
                 address2:{
                     type: String,
