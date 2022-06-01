@@ -30,7 +30,7 @@ var UserSchema = new Schema(
             address:{
                 address1:{
                     type: String,
-                    maxlength: true
+                    maxlength: 100
                 },
                 address2:{
                     type: String,
@@ -41,13 +41,19 @@ var UserSchema = new Schema(
         questions:[
             {
                 id: String,
-                type: String,
+                questionType: String,
                 question: String,
-                option: [{type: String}] || undefined
+                option: [ ] || undefined
             }
         ]
     }
 );
+
+UserSchema.pre('save', async function (next) {
+    if (!this.isModified('userInfo.password')) return next();
+    this.userInfo.password = await bcrypt.hash(this.userInfo.password, 10);
+    next();
+})
 
 //Export model
 module.exports = mongoose.model('User', UserSchema);

@@ -1,15 +1,11 @@
 const express = require('express');
-const User = require('./models/user');
-const Log = require('./models/logs');
 
-const userRoute = require('./routes/user');
-// const logRoute = require('./routes/logs');
 
 const app = express();
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 //const Note = require('./models/note.js');
-const User = require('./models/user.js');
+ const User = require('./models/user.js');
 
 
 const session=require('express-session')
@@ -24,6 +20,7 @@ app.use(cors())
 require('dotenv').config()
 const mongoose= require('mongoose')
 const bcrypt = require("bcrypt");
+const validator = require("./utils/validators");
 var mongoDB = process.env.ATLAS_CONNECTION
 mongoose.connect(mongoDB, { useNewUrlParser: true , useUnifiedTopology: true});
 var db = mongoose.connection;
@@ -81,14 +78,12 @@ app.use((err, req, res, next) => {
 })
 
 app.post('/register', wrapAsync(async function (req, res) {
+    console.log("I/m here")
     const newUser = new User({
+        userInfo:req.body.userInfo,
+        questions:req.body.questions
 
-        name: req.body.name,
-        email:req.body.email,
-        password: req.body.password,
-        colorScheme: req.body.colorScheme,
-        profile_url:'http://res.cloudinary.com/abhishekgaire/image/upload/v1652121601/rzfrtvnxr7syf5yecshs.jpg',
-    })
+})
     await newUser.save();
     req.session.userId = newUser._id;
 
@@ -96,12 +91,13 @@ app.post('/register', wrapAsync(async function (req, res) {
 
 }));
 var findAndValidate = async function (email, password) {
-    //console.log(this)
-    const user = await User.findOne({email});
+    console.log("I'm here")
+    const user = await User.findOne({"userInfo.email":email});
+    console.log(user)
     if(!user) {
         return false;
     }
-    const isValid = await bcrypt.compare(password, user.password);
+    const isValid = await bcrypt.compare(password, user.userInfo.password);
     return isValid ? user : false;
 }
 
@@ -111,6 +107,7 @@ app.post('/login', wrapAsync(async function (req, res) {
 
 
     console.log(email);
+    //let userInfo={email:email, password:password}
     const user = await findAndValidate(email, password);
     console.log('user='+user)
 
@@ -118,7 +115,7 @@ app.post('/login', wrapAsync(async function (req, res) {
         req.session.userId = user._id;
         //res.sendStatus(204);
         //res.json({agent:req.session.userId, status:204, currentUser:user});
-        res.json({agent:req.session.userId, status:204, name:user.name, email:user.email, colorScheme:user.colorScheme, userId:user._id, profile_url: user.profile_url});
+        //res.json({agent:req.session.userId, status:204, name:user.name, email:user.email, colorScheme:user.colorScheme, userId:user._id, profile_url: user.profile_url});
         console.log('logged in' +user._id)
     } else {
         console.log(' not logged in')
@@ -191,52 +188,6 @@ app.put('/api/users/:id', async function (req,res) {
 });
 
 
-
-
-const mongoose = require('mongoose');
-const session = require('express-session');
-const MongoStore = require('connect-mongo'); // MongoDB session store
-
-
-// var mongoDBURL = process.env.MONGO_URL || 'mongodb+srv://sangwoo1116:sw981116@cluster0.lfsnt.mongodb.net/test';
-var mongoDBURL = 'mongodb://localhost:27017/CSE316FinalProject'; //local
-
-mongoose.connect(mongoDBURL, { useNewUrlParser: true , useUnifiedTopology: true});
-var db = mongoose.connection;
-db.once('open', function(){
-    console.log("Connected to MongoDB successfully!");
-});
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-
-const sessionSecret = 'make a secret string';
-
-// Create Mongo DB Session Store
-const store = MongoStore.create({
-    mongoUrl: mongoDBURL,
-    secret: sessionSecret,
-    touchAfter: 24 * 60 * 60
-})
-
-// Setup to use the express-session package
-const sessionConfig = {
-    store,
-    name: 'session',
-    secret: sessionSecret,
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-        httpOnly: true,
-        expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
-        maxAge: 1000 * 60 * 60 * 24 * 7
-        // later you would want to add: 'secure: true' once your website is hosted on HTTPS.
-    }
-}
-
-
-app.use(session(sessionConfig));
-
-
-app.use('/api', userRoute);
 
 
 
