@@ -13,7 +13,7 @@ var UserSchema = new Schema(
             },
             email: {
                 type: String,
-                validator:{
+                validate:{
                     validator: validator.validateEmail,
                     message: props => `${props.value} is not a valid email`
                 },
@@ -36,6 +36,9 @@ var UserSchema = new Schema(
                     type: String,
                     maxlength: 100
                 }
+            },
+            isAdmin:{
+                type: Boolean
             }
         },
         questions:[
@@ -54,6 +57,16 @@ UserSchema.pre('save', async function (next) {
     this.userInfo.password = await bcrypt.hash(this.userInfo.password, 10);
     next();
 })
+
+UserSchema.statics.findAndValidate = async function (email, password) {
+    const user = await this.findOne({"userInfo.email":email});
+    if(!user) {
+        return false;
+    }
+
+    const isValid = await bcrypt.compare(password, user.userInfo.password);
+    return isValid ? user : false;
+}
 
 //Export model
 module.exports = mongoose.model('User', UserSchema);
