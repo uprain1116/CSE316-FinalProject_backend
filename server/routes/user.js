@@ -95,5 +95,9 @@ router.post('/logout', wrapAsync(async function (req, res) {
     console.log('logged out')
 }));
 
+router.post('/getcurrentsession', wrapAsync(async function (req, res){
+    res.json(req.session.userId);
+}))
+
 
 module.exports = router;
