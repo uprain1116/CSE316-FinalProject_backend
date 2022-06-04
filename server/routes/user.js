@@ -28,8 +28,22 @@ router.get('/users/:id', async function (req,res) {
     res.send("No user with id: " + id);
 });
 
+//update current user information
+router.put('/users/:id', wrapAsync(async function (req, res){
+    let id = req.params.id;
+    console.log(req.body.password);
+    User.findByIdAndUpdate(id, 
+        {
+            userInfo: req.body
+        },
+        function(err, result){
+            if(err) res.send(err);
+            else res.sendStatus(204);
+        });
+}));
 
-router.delete('/users/:id', async function (req,res) {
+
+router.delete('/users/:id', wrapAsync(async function (req,res) {
     const id = req.params.id;
     User.findByIdAndDelete(id,
         null,
@@ -44,25 +58,7 @@ router.delete('/users/:id', async function (req,res) {
                 res.sendStatus(204);
             }
         });
-});
-
-router.put('/users/:id', async function (req,res) {
-    let id = req.params.id;
-    console.log("PUT with id: " + id + ", body: " + JSON.stringify(req.body));
-    // This below method automatically saves it to the database
-    User.findByIdAndUpdate(id,
-        {'xid': req.body.id, "name": req.body.name, "email": req.body.email, "colorScheme": req.body.colorScheme,"profile_url":req.body.profile_url},
-        function (err, result) {
-            if (err) {
-                console.log("ERROR: " + err);
-                res.send(err);
-            } else {
-                // Status 204 represents success with no content
-                // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/204
-                res.sendStatus(204);
-            }
-        });
-});
+}));
 
 
 router.post('/register', wrapAsync(async function (req, res){
