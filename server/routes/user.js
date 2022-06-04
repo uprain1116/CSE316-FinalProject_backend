@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
+const Logs = require('../models/log');
 const {wrapAsync} = require('../utils/helper');
 const mongoose= require('mongoose');
 const user = require('../models/user');
@@ -51,7 +52,7 @@ router.put('/users/:id', async function (req,res) {
     console.log("PUT with id: " + id + ", body: " + JSON.stringify(req.body));
     // This below method automatically saves it to the database
     User.findByIdAndUpdate(id,
-        {'xid': req.body.id, "name": req.body.name, "email": req.body.email, "colorScheme": req.body.colorScheme,"profile_url":req.body.profile_url},
+        {"userInfo":req.body.userInfo, "questions":req.body.questions},
         function (err, result) {
             if (err) {
                 console.log("ERROR: " + err);
@@ -60,6 +61,7 @@ router.put('/users/:id', async function (req,res) {
                 // Status 204 represents success with no content
                 // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/204
                 res.sendStatus(204);
+                console.log(result)
             }
         });
 });
@@ -98,6 +100,9 @@ router.post('/logout', wrapAsync(async function (req, res) {
 router.post('/getcurrentsession', wrapAsync(async function (req, res){
     res.json(req.session.userId);
 }))
+
+
+
 
 
 module.exports = router;

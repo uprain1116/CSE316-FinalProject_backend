@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 
-var Logschema = new Schema(
+var LogSchema = new Schema(
     {
         userid: {
             type: String,
@@ -10,14 +10,17 @@ var Logschema = new Schema(
         },
         responses: [
             {
-                date: Date,
+                date: String,
                 answer: [
                     {
                         qid: String,
-                        ans: Number || String || Boolean || undefined
+                        questionType:String,
+                        ans: String
                     }
                 ]
             }
         ]
     }
 );
+
+module.exports = mongoose.model('Log', LogSchema);
