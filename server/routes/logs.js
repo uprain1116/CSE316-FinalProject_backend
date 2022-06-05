@@ -14,6 +14,12 @@ router.get('/logs', wrapAsync(async function (req, res){
     res.json(log);
 }));
 
+router.get('/logs/:id', wrapAsync(async function (req, res){
+    let id = req.params.id;
+    const log = await Log.find({userid: id});
+    res.json(log);
+}));
+
 
 router.post('/createLog', wrapAsync(async function (req, res){
     const {userid, responses} = req.body;
