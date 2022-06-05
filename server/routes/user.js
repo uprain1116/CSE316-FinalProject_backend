@@ -32,7 +32,6 @@ router.get('/users/:id', async function (req,res) {
 //update current user information
 router.put('/users/:id', wrapAsync(async function (req, res){
     let id = req.params.id;
-    console.log(req.body.password);
     User.findByIdAndUpdate(id, 
         {
             userInfo: req.body
@@ -41,6 +40,24 @@ router.put('/users/:id', wrapAsync(async function (req, res){
             if(err) res.send(err);
             else res.sendStatus(204);
         });
+}));
+
+
+//Update current user Question
+router.put('/userQ/:id', wrapAsync(async function (req, res){
+    console.log('backend body', req.body.questions)
+    let id = req.params.id;
+    User.findByIdAndUpdate(id, 
+        {
+            userInfo: req.body.userInfo,
+            questions: req.body.questions
+
+        },
+        function(err, result){
+            if(err) res.send(err);
+            else res.sendStatus(204);
+        })
+
 }));
 
 
