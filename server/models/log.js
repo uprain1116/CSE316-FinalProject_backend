@@ -6,11 +6,14 @@ var LogSchema = new Schema(
     {
         userid: {
             type: String,
-            maxlength: 100
+            maxlength: 100,
+            required: true,
+            trim: true,
+            unique: true,
         },
         responses: [
             {
-                date: String,
+                date: Date,
                 answer: [
                     {
                         qid: String,

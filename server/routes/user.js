@@ -88,7 +88,7 @@ router.post('/register', wrapAsync(async function (req, res){
     req.session.userId = newUser._id;
     // Note: this is returning the entire user object to demo, which will include the hashed and salted password.
     // In practice, you wouldn't typically do this – a success status would suffice, or perhaps just the user id.
-    res.json(user);
+    res.json(newUser._id);
 }));
 
 router.post('/login', wrapAsync(async function (req, res) {

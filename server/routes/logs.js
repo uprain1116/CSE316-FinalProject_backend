@@ -10,33 +10,32 @@ const user = require('../models/user');
 router.get('/logs', wrapAsync(async function (req, res){
     console.log(req.session.userId)
     const log = await Log.find({userid: req.session.userId});
+    console.log(log);
     res.json(log);
 }));
 
 
+router.post('/createLog', wrapAsync(async function (req, res){
+    const {userid, responses} = req.body;
+    const newLog = new Log({userid, responses})
 
-router.post('/logs', wrapAsync(async function (req, res){
-    const newLog = new Log({
-        userid:req.body.userId,
-        responses:req.body.responses
-    })
-
-    // {
-    // //     userid: userID,
-    // //     responses: [
-    // //         {
-    // //             date: responses.date,
-    // //             answer: responses.answer
-    // //
-    // //         }
-    // //     ]
-    // // })
-    //
     await newLog.save();
+    res.json(newLog);
+}));
 
-    // Note: this is returning the entire user object to demo, which will include the hashed and salted password.
-    // In practice, you wouldn't typically do this – a success status would suffice, or perhaps just the user id.
-     res.json(newLog);
+//Update current user Question
+router.put('/log/:id', wrapAsync(async function (req, res){
+    let id = req.params.id;
+    Log.findByIdAndUpdate(id, 
+        {
+            userid: req.body.userid,
+            responses: req.body.responses
+
+        },
+        function(err, result){
+            if(err) res.send(err);
+            else res.sendStatus(204);
+        })
 }));
 
 
