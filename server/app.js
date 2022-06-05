@@ -5,6 +5,7 @@ app.use(bodyParser.json());
 const User = require('./models/user.js');
 
 const userRoute = require('./routes/user');
+const logRoute = require('./routes/logs');
 
 
 const session=require('express-session')
@@ -62,6 +63,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/api', userRoute);
+app.use('/api',logRoute)
 
 app.use((err, req, res, next) => {
     console.log("Error handling called " + err);

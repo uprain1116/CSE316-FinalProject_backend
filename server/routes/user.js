@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
+const Logs = require('../models/log');
 const {wrapAsync} = require('../utils/helper');
 const mongoose= require('mongoose');
 const user = require('../models/user');
@@ -94,6 +95,9 @@ router.post('/logout', wrapAsync(async function (req, res) {
 router.post('/getcurrentsession', wrapAsync(async function (req, res){
     res.json(req.session.userId);
 }))
+
+
+
 
 
 module.exports = router;
