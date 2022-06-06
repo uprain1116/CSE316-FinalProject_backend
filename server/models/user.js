@@ -39,6 +39,9 @@ var UserSchema = new Schema(
             },
             isAdmin:{
                 type: Boolean
+            },
+            profile_url:{
+                type:String
             }
         },
         questions:[
