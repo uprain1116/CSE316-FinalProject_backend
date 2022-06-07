@@ -11,7 +11,7 @@ In the same folder you then can use `node app.js` to start the server that runs 
 ### additional information
 We have hosted the project online on ***Heroku***. \
 We hosted our database on ***MongoDB Atlas***\
-Please visit the following website: https://cse316-finalproject.herokuapp.com 
+Please visit the following website: https://abhishek-sangwoo-316.herokuapp.com
 
 Below are information about a user account with at least 20 responses.\
 account email: user@email.com\
